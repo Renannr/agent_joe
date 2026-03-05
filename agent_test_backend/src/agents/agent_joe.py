@@ -1,15 +1,16 @@
 from pathlib import Path
 from agno.agent import Agent
-from agno.tools.trafilatura import TrafilaturaTools
-from agno.tools.sleep import SleepTools
-from agno.tools.local_file_system import LocalFileSystemTools
-from agno.tools.file_generation import FileGenerationTools
-from agno.tools.shell import ShellTools
-from agno.tools.coding import CodingTools
 from agno.db.sqlite import SqliteDb
-from agno.tools.python import PythonTools
-
 from agno.skills import Skills, LocalSkills
+
+from src.agents.tools import (
+    TrafilaturaTools,
+    SleepTools,
+    ShellTools,
+    PythonTools,
+    FileGenerationTools,
+    CodingTools
+)
 
 
 def get_joe(model):
@@ -25,10 +26,11 @@ def get_joe(model):
         joe_instructions = ""
 
     skills = Skills(loaders=[
-        LocalSkills(skill_path / "code-review"),
         LocalSkills(skill_path / "readme-blueprint-generator"),
+        LocalSkills(skill_path / "create-skill"),
         LocalSkills(skill_path / "create-agentsmd")
         ])
+    
     return Agent(
         model=model,
         db=db,
@@ -37,7 +39,6 @@ def get_joe(model):
         tools=[
             TrafilaturaTools(), 
             SleepTools(), 
-            #LocalFileSystemTools(target_directory="./agents-output"), 
             ShellTools(),
             PythonTools(),
             FileGenerationTools(output_directory="./agents-output"),
@@ -45,7 +46,7 @@ def get_joe(model):
         ],
         add_history_to_context=True,
         enable_agentic_memory=True,
-        num_history_runs=10,
+        num_history_runs=5,
         reasoning_agent=True,
         add_datetime_to_context=True,
         stream=True,
