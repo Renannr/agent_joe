@@ -48,7 +48,7 @@ export function useChat() {
 
     try {
       const baseUrl = import.meta.env.VITE_API_URL ?? "";
-      const response = await fetch(`${baseUrl}/chat`, {
+      const response = await fetch(`${baseUrl}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text.trim(), session_id: sessionId.current }),

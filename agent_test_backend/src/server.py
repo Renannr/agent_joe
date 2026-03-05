@@ -50,7 +50,7 @@ class ChatRequest(BaseModel):
     session_id: str | None = None
 
 
-@app.post("/chat")
+@app.post("/api/chat")
 async def chat(req: ChatRequest):
     async def event_generator():
         in_think = False

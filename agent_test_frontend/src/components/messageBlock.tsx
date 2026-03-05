@@ -1,4 +1,4 @@
-import ThinkingBlock from "./ThinkingBlock";
+import ThinkingBlock from "./thinkingBlock";
 import ToolCallBlock from "./toolCallBlock";
 import TypingDots from "./typingDots";
 import { type MessageBlock } from "@/hooks/useChat";
