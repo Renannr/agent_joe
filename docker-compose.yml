@@ -1,0 +1,22 @@
+services:
+  backend:
+    build: ./agent_test_backend
+    env_file:
+      - ./agent_test_backend/.env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - app
+
+  front:
+    build: ./agent_test_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - app
+
+networks:
+  app:
+    driver: bridge
