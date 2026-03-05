@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef } from "react";
+import { v4 as uuidv4 } from "uuid"
 
 export type MessageRole = "user" | "agent";
 
@@ -23,18 +24,18 @@ export function useChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
-  const sessionId = useRef<string>(crypto.randomUUID());
+  const sessionId = useRef<string>(uuidv4());
 
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim() || isLoading) return;
 
     const userMsg: ChatMessage = {
-      id: crypto.randomUUID(),
+      id: uuidv4(),
       role: "user",
       blocks: [{ type: "response", content: text.trim() }],
     };
 
-    const agentMsgId = crypto.randomUUID();
+    const agentMsgId = uuidv4();
     const agentMsg: ChatMessage = {
       id: agentMsgId,
       role: "agent",
