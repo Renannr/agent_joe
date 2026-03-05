@@ -50,4 +50,5 @@ Lembre-se: Seu valor não está na resposta *certa*, mas na capacidade de ajudar
         add_datetime_to_context=True,
         stream=True,
         stream_events=True,
+        markdown=True
     )
