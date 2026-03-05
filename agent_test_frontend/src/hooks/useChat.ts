@@ -7,12 +7,15 @@ export interface ToolCall {
   arguments?: Record<string, unknown>;
 }
 
+export type MessageBlock =
+  | { type: "thinking"; content: string }
+  | { type: "response"; content: string }
+  | { type: "tool_call"; tool_name: string; arguments?: Record<string, unknown> };
+
 export interface ChatMessage {
   id: string;
   role: MessageRole;
-  content: string;
-  thinking?: string;
-  toolCalls?: ToolCall[];
+  blocks: MessageBlock[];
   isStreaming?: boolean;
 }
 
@@ -28,25 +31,24 @@ export function useChat() {
     const userMsg: ChatMessage = {
       id: crypto.randomUUID(),
       role: "user",
-      content: text.trim(),
+      blocks: [{ type: "response", content: text.trim() }],
     };
 
+    const agentMsgId = crypto.randomUUID();
     const agentMsg: ChatMessage = {
-      id: crypto.randomUUID(),
+      id: agentMsgId,
       role: "agent",
-      content: "",
-      thinking: "",
-      toolCalls: [],
+      blocks: [],
       isStreaming: true,
     };
 
     setMessages((prev) => [...prev, userMsg, agentMsg]);
     setIsLoading(true);
-
     abortRef.current = new AbortController();
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/chat`, {
+      const baseUrl = import.meta.env.VITE_API_URL ?? "";
+      const response = await fetch(`${baseUrl}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text.trim(), session_id: sessionId.current }),
@@ -75,40 +77,46 @@ export function useChat() {
 
             setMessages((prev) =>
               prev.map((msg) => {
-                if (msg.id !== agentMsg.id) return msg;
+                if (msg.id !== agentMsgId) return msg;
+
+                const blocks = [...msg.blocks];
+                const last = blocks[blocks.length - 1];
 
                 if (data.type === "thinking") {
-                  return {
-                    ...msg,
-                    thinking: (msg.thinking ?? "") + (data.content ?? ""),
-                  };
+                  if (last?.type === "thinking") {
+                    blocks[blocks.length - 1] = {
+                      ...last,
+                      content: last.content + (data.content ?? ""),
+                    };
+                  } else {
+                    blocks.push({ type: "thinking", content: data.content ?? "" });
+                  }
                 }
 
                 if (data.type === "response") {
-                  return {
-                    ...msg,
-                    content: msg.content + (data.content ?? ""),
-                  };
+                  if (last?.type === "response") {
+                    blocks[blocks.length - 1] = {
+                      ...last,
+                      content: last.content + (data.content ?? ""),
+                    };
+                  } else {
+                    blocks.push({ type: "response", content: data.content ?? "" });
+                  }
                 }
 
                 if (data.type === "tool_call") {
-                  return {
-                    ...msg,
-                    toolCalls: [
-                      ...(msg.toolCalls ?? []),
-                      {
-                        tool_name: data.tool_name,
-                        arguments: data.arguments,
-                      },
-                    ],
-                  };
+                  blocks.push({
+                    type: "tool_call",
+                    tool_name: data.tool_name,
+                    arguments: data.arguments,
+                  });
                 }
 
-                return msg;
+                return { ...msg, blocks };
               })
             );
           } catch {
-            // malformed JSON chunk, skip
+            // malformed chunk, skip
           }
         }
       }
@@ -116,15 +124,19 @@ export function useChat() {
       if (err instanceof Error && err.name === "AbortError") return;
       setMessages((prev) =>
         prev.map((msg) =>
-          msg.id === agentMsg.id
-            ? { ...msg, content: "Erro ao conectar com o servidor.", isStreaming: false }
+          msg.id === agentMsgId
+            ? {
+              ...msg,
+              blocks: [{ type: "response", content: "Erro ao conectar com o servidor." }],
+              isStreaming: false,
+            }
             : msg
         )
       );
     } finally {
       setMessages((prev) =>
         prev.map((msg) =>
-          msg.id === agentMsg.id ? { ...msg, isStreaming: false } : msg
+          msg.id === agentMsgId ? { ...msg, isStreaming: false } : msg
         )
       );
       setIsLoading(false);

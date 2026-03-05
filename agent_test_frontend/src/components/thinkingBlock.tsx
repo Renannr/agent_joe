@@ -14,13 +14,13 @@ export default function ThinkingBlock({
 		<div className="mb-1.5">
 			<button
 				onClick={() => setOpen((o) => !o)}
-				className="flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-300 transition-colors font-mono"
+				className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors font-mono"
 			>
 				{open ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
 				{isStreaming ? "pensando..." : "pensamento"}
 			</button>
 			{open && (
-				<p className="mt-1 text-xs text-zinc-500 font-mono leading-relaxed whitespace-pre-wrap border-l border-zinc-700 pl-2">
+				<p className="mt-1 text-xs text-muted-foreground font-mono leading-relaxed whitespace-pre-wrap border-l border-border pl-2">
 					{content}
 				</p>
 			)}

@@ -2,14 +2,27 @@ import { useEffect, useRef, useState } from "react";
 import { useChat } from "@/hooks/useChat";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowUp, Square } from "lucide-react";
+import { ArrowUp, Moon, Square, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
-import ThinkingBlock from "./components/ThinkingBlock";
-import ToolCallBlock from "./components/toolCallBlock";
-import TypingDots from "./components/typingDots";
+import MessageBlocks from "./components/messageBlock";
+
+function useTheme() {
+	const [dark, setDark] = useState(() => {
+		return document.documentElement.classList.contains("dark");
+	});
+
+	const toggle = () => {
+		const isDark = !dark;
+		document.documentElement.classList.toggle("dark", isDark);
+		setDark(isDark);
+	};
+
+	return { dark, toggle };
+}
 
 export default function App() {
 	const { messages, isLoading, sendMessage, stop } = useChat();
+	const { dark, toggle } = useTheme();
 	const [input, setInput] = useState("");
 	const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -30,12 +43,22 @@ export default function App() {
 	};
 
 	return (
-		<div className="flex flex-col h-svh bg-zinc-950 text-zinc-100 font-mono">
+		<div className="flex flex-col h-svh bg-background text-foreground font-mono">
+			<div className="flex justify-end px-4 py-2 border-b border-border">
+				<Button
+					onClick={toggle}
+					size="icon"
+					variant="ghost"
+					className="text-zinc-400 hover:text-foreground hover:bg-muted"
+				>
+					{dark ? <Sun size={16} /> : <Moon size={16} />}
+				</Button>
+			</div>
 			{/* Messages area */}
 			<div className="flex-1 overflow-y-auto px-4 py-6">
-				<div className="max-w-2xl mx-auto flex flex-col gap-4">
+				<div className="max-w-3xl mx-auto flex flex-col gap-4">
 					{messages.length === 0 && (
-						<p className="text-center text-zinc-600 text-sm mt-24 select-none">
+						<p className="text-center text-muted-foreground text-sm mt-24 select-none">
 							nenhuma mensagem ainda
 						</p>
 					)}
@@ -50,34 +73,18 @@ export default function App() {
 									: "self-start items-start",
 							)}
 						>
-							{/* Thinking block (agent only) */}
-							{msg.role === "agent" && msg.thinking && (
-								<ThinkingBlock
-									content={msg.thinking}
+							{msg.role === "user" ? (
+								<div className="rounded-2xl rounded-br-sm px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap break-words bg-primary text-primary-foreground">
+									{msg.blocks[0]?.type === "response"
+										? msg.blocks[0].content
+										: ""}
+								</div>
+							) : (
+								<MessageBlocks
+									blocks={msg.blocks}
 									isStreaming={msg.isStreaming}
 								/>
 							)}
-
-							{/* Tool calls (agent only) */}
-							{msg.role === "agent" && !!msg.toolCalls?.length && (
-								<ToolCallBlock toolCalls={msg.toolCalls} />
-							)}
-
-							{/* Bubble */}
-							<div
-								className={cn(
-									"rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap break-words",
-									msg.role === "user"
-										? "bg-zinc-100 text-zinc-900 rounded-br-sm"
-										: "bg-zinc-800 text-zinc-100 border border-zinc-700 rounded-bl-sm",
-								)}
-							>
-								{msg.role === "agent" && msg.isStreaming && !msg.content ? (
-									<TypingDots />
-								) : (
-									msg.content
-								)}
-							</div>
 						</div>
 					))}
 
@@ -86,7 +93,7 @@ export default function App() {
 			</div>
 
 			{/* Input bar */}
-			<div className="border-t border-zinc-800 bg-zinc-950 px-4 py-4">
+			<div className="border-t border-border bg-background px-4 py-4">
 				<div className="max-w-2xl mx-auto flex gap-2 items-end">
 					<Textarea
 						value={input}
@@ -95,8 +102,7 @@ export default function App() {
 						placeholder="Digite uma mensagem..."
 						rows={1}
 						className={cn(
-							"resize-none bg-zinc-900 border-zinc-700 text-zinc-100 placeholder:text-zinc-600",
-							"font-mono text-sm rounded-xl focus-visible:ring-1 focus-visible:ring-zinc-500",
+							"resize-none font-mono text-sm rounded-xl",
 							"min-h-[42px] max-h-40 overflow-y-auto",
 						)}
 					/>
@@ -105,7 +111,7 @@ export default function App() {
 							onClick={stop}
 							size="icon"
 							variant="outline"
-							className="shrink-0 border-zinc-700 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 rounded-xl"
+							className="shrink-0 border-zinc-700 bg-zinc-900 hover:bg-muted text-zinc-300 rounded-xl"
 						>
 							<Square size={16} />
 						</Button>

@@ -5,3 +5,4 @@ agno
 openai
 trafilatura
 sqlalchemy
+reportlab

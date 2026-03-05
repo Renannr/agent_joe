@@ -39,6 +39,7 @@ else:
     model = LMStudio(
         id=lmstudio_model,
         base_url=lmstudio_base_url,
+        reasoning_effort="low"
     )
 
 agent = get_joe(model)
