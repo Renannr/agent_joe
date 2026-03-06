@@ -55,7 +55,7 @@ async def chat(req: ChatRequest):
     async def event_generator():
         in_think = False
 
-        async for event in agent.arun(req.message, session_id=req.session_id, stream=True, stream_events=True):
+        async for event in agent.arun(req.message, session_id=req.session_id, stream=True, stream_events=True, debug_mode=True):
             if event.event == RunEvent.run_content:
                 chunk = event.content or ""
 
@@ -89,11 +89,13 @@ async def chat(req: ChatRequest):
                     + "\n\n"
                 )
             elif event.event == RunEvent.reasoning_step:
+                # Converter ReasoningStep para string antes de serializar JSON
+                content_str = str(event.content) if event.content else ""
                 yield (
                     "data: "
                     + json.dumps({
                         "type": "thinking",
-                        "content": event.content,
+                        "content": content_str,
                     })
                     + "\n\n"
                 )

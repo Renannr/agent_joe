@@ -170,16 +170,55 @@ The main agent (Joe) has access to these tools:
 - **CodingTools** - Code generation and manipulation
 - **SleepTools** - Controlled delays/awaiting
 
+### Joe Loop: Self-Improvement Cycle
+Joe follows a structured self-improvement cycle (Joe Loop):
+
+```
+1. Auto-Analysis (Before Acting)
+   ├── Analyze project context (agent_joe.py, skills/, AGENTS.md)
+   ├── Evaluate current tools and capabilities
+   ├── Identify opportunities for evolution
+   
+2. Intelligent Action (While Helping)
+   ├── Answer user question (Priority 1)
+   ├── Suggest improvements (Priority 2)
+   ├── Build iteratively (not waiting for requests)
+   
+3. Self-Optimization (After Acting)
+   ├── Reflect on interaction effectiveness
+   ├── Suggest specific tool/skill improvements
+   ├── Propose new skills when gaps are identified
+```
+
 ### Agent Skills
 Joe can perform these specialized tasks:
 1. **Code Review** (`code-review`) - Analyze code quality, style, and best practices
 2. **README Generation** (`readme-blueprint-generator`) - Create comprehensive project documentation
 3. **AGENTS.md Creation** (`create-agentsmd`) - Generate agent-focused documentation
 
+### Self-Reflection & Evolution
+Joe engages in **meta-cognitive reflection** to continuously improve:
+- **After complex interactions**: Joe reflects on what worked, what didn't, and how to evolve
+- **After error resolution**: Joe analyzes if the solution was effective and suggests preventive measures
+- **After user requests**: Joe questions if it should be more proactive or more explanatory
+
+**Example**: When encountering a JSON serialization error with custom objects, Joe:
+1. Identified the root cause (`ReasoningStep` not JSON serializable)
+2. Applied the fix (`str()` conversion)
+3. **Reflected** that this revealed a gap in validation
+4. **Suggested** creating a `json-serializability-checker` skill
+5. **Proposed** updating documentation to include this pattern
+
 ### Memory Management
 - Agent conversation history is stored in `agno.db` (SQLite)
 - History retention: 10 previous runs per session
 - Session IDs can be used for multi-turn conversations
+
+### Agent Skills
+Joe can perform these specialized tasks:
+1. **Code Review** (`code-review`) - Analyze code quality, style, and best practices
+2. **README Generation** (`readme-blueprint-generator`) - Create comprehensive project documentation
+3. **AGENTS.md Creation** (`create-agentsmd`) - Generate agent-focused documentation
 
 ### Common Issues & Solutions
 

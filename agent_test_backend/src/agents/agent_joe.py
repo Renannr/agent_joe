@@ -8,8 +8,10 @@ from src.agents.tools import (
     SleepTools,
     ShellTools,
     PythonTools,
-    FileGenerationTools,
-    CodingTools
+    UserControlFlowTools,
+    CodingTools,
+    ReasoningTools,
+    FileTools
 )
 
 
@@ -39,10 +41,12 @@ def get_joe(model):
         tools=[
             TrafilaturaTools(), 
             SleepTools(), 
-            ShellTools(),
+            #ShellTools(),
             PythonTools(),
-            FileGenerationTools(output_directory="./agents-output"),
-            CodingTools()
+            CodingTools(),
+            ReasoningTools(),
+            FileTools(),
+            UserControlFlowTools()
         ],
         add_history_to_context=True,
         enable_agentic_memory=True,
