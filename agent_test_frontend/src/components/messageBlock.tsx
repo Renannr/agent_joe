@@ -1,14 +1,25 @@
 import ThinkingBlock from "./thinkingBlock";
 import ToolCallBlock from "./toolCallBlock";
+import UserInputBlock from "./userInputBlock";
 import TypingDots from "./typingDots";
 import { type MessageBlock } from "@/hooks/useChat";
 
 export default function MessageBlocks({
 	blocks,
 	isStreaming,
+	msgId,
+	onUserInputSubmit,
+	onUserInputCancel,
 }: {
 	blocks: MessageBlock[];
 	isStreaming?: boolean;
+	msgId: string;
+	onUserInputSubmit: (
+		msgId: string,
+		blockIndex: number,
+		fieldValues: Record<string, string>,
+	) => void;
+	onUserInputCancel: (msgId: string, blockIndex: number) => void;
 }) {
 	return (
 		<div className="flex flex-col gap-1.5 items-start">
@@ -34,6 +45,20 @@ export default function MessageBlocks({
 					);
 				}
 
+				if (block.type === "user_input") {
+					return (
+						<UserInputBlock
+							key={i}
+							fields={block.fields}
+							answered={block.answered}
+							onSubmit={(fieldValues) =>
+								onUserInputSubmit(msgId, i, fieldValues)
+							}
+							onCancel={() => onUserInputCancel(msgId, i)}
+						/>
+					);
+				}
+
 				if (block.type === "response") {
 					return (
 						<div
@@ -51,7 +76,6 @@ export default function MessageBlocks({
 				return null;
 			})}
 
-			{/* dots enquanto nenhum bloco ainda */}
 			{isStreaming &&
 				!blocks.some((b) => b.type === "response" && b.content) && (
 					<div className="rounded-2xl rounded-bl-sm px-4 py-2.5 bg-secondary border border-border">

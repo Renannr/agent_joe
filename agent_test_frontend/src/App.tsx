@@ -21,7 +21,8 @@ function useTheme() {
 }
 
 export default function App() {
-	const { messages, isLoading, sendMessage, stop } = useChat();
+	const { messages, isLoading, sendMessage, continueWithInput, stop } =
+		useChat();
 	const { dark, toggle } = useTheme();
 	const [input, setInput] = useState("");
 	const bottomRef = useRef<HTMLDivElement>(null);
@@ -42,6 +43,11 @@ export default function App() {
 		}
 	};
 
+	const handleUserInputCancel = (msgId: string, blockIndex: number) => {
+		// Envia fields vazios — agno trata como cancelamento
+		continueWithInput(msgId, blockIndex, {});
+	};
+
 	return (
 		<div className="flex flex-col h-svh bg-background text-foreground font-mono">
 			<div className="flex justify-end px-4 py-2 border-b border-border">
@@ -54,6 +60,7 @@ export default function App() {
 					{dark ? <Sun size={16} /> : <Moon size={16} />}
 				</Button>
 			</div>
+
 			{/* Messages area */}
 			<div className="flex-1 overflow-y-auto px-4 py-6">
 				<div className="max-w-3xl mx-auto flex flex-col gap-4">
@@ -83,6 +90,9 @@ export default function App() {
 								<MessageBlocks
 									blocks={msg.blocks}
 									isStreaming={msg.isStreaming}
+									msgId={msg.id}
+									onUserInputSubmit={continueWithInput}
+									onUserInputCancel={handleUserInputCancel}
 								/>
 							)}
 						</div>
