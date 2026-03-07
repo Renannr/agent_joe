@@ -5,11 +5,8 @@ from agno.skills import Skills, LocalSkills
 
 from src.agents.tools import (
     TrafilaturaTools,
-    SleepTools,
-    ShellTools,
     PythonTools,
     UserControlFlowTools,
-    CodingTools,
     ReasoningTools,
     FileTools
 )
@@ -28,10 +25,12 @@ def get_joe(model):
         joe_instructions = ""
 
     skills = Skills(loaders=[
-        LocalSkills(skill_path / "readme-blueprint-generator"),
+        LocalSkills(skill_path / "read-project"),
+        LocalSkills(skill_path / "self-improve"),
+        LocalSkills(skill_path / "debug-session"),
         LocalSkills(skill_path / "create-skill"),
-        LocalSkills(skill_path / "create-agentsmd")
-        ])
+        LocalSkills(skill_path / "create-agentsmd"),
+    ])
     
     return Agent(
         model=model,
@@ -39,13 +38,10 @@ def get_joe(model):
         skills=skills,
         instructions=joe_instructions,
         tools=[
-            TrafilaturaTools(), 
-            SleepTools(), 
-            #ShellTools(),
-            PythonTools(),
-            CodingTools(),
+            TrafilaturaTools(),
+            PythonTools(base_dir=Path(__file__).parent.parent),
             ReasoningTools(),
-            FileTools(),
+            FileTools(base_dir=Path(__file__).parent.parent),
             UserControlFlowTools()
         ],
         add_history_to_context=True,
