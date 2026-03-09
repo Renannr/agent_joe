@@ -8,12 +8,16 @@ from src.agents.tools import (
     PythonTools,
     UserControlFlowTools,
     ReasoningTools,
-    FileTools
+    FileTools,
+    CodingTools
 )
 
+from src.agents.config.model_config import get_model
 
-def get_joe(model):
-    db = SqliteDb(db_file="agno.db")
+
+def get_joe() -> Agent:
+    model = get_model()
+    db = SqliteDb(db_file="joe_memory.db")
     skill_path = Path(__file__).parent / "skills"
     instruction_path = Path(__file__).parent / "instructions"
 
@@ -31,7 +35,7 @@ def get_joe(model):
         LocalSkills(skill_path / "create-skill"),
         LocalSkills(skill_path / "create-agentsmd"),
     ])
-    
+
     return Agent(
         model=model,
         db=db,
@@ -39,9 +43,10 @@ def get_joe(model):
         instructions=joe_instructions,
         tools=[
             TrafilaturaTools(),
-            PythonTools(base_dir=Path(__file__).parent.parent),
+            PythonTools(base_dir=Path(__file__).parents[2]),
             ReasoningTools(),
-            FileTools(base_dir=Path(__file__).parent.parent),
+            #FileTools(base_dir=Path(__file__).parents[2]),
+            CodingTools(base_dir=Path(__file__).parents[2], enable_grep=True, enable_ls=True),
             UserControlFlowTools()
         ],
         add_history_to_context=True,

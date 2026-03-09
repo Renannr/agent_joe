@@ -34,15 +34,8 @@ export default function MessageBlocks({
 					);
 				}
 
-				if (block.type === "tool_call") {
-					return (
-						<ToolCallBlock
-							key={i}
-							toolCalls={[
-								{ tool_name: block.tool_name, arguments: block.arguments },
-							]}
-						/>
-					);
+				if (block.type === "tool_call_group") {
+					return <ToolCallBlock key={i} toolCalls={block.tools} />;
 				}
 
 				if (block.type === "user_input") {

@@ -2,6 +2,7 @@
 .env
 .db
 agno.db
+joe_memory.db
 # Logs
 logs
 *.log

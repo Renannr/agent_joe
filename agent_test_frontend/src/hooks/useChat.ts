@@ -17,7 +17,7 @@ export interface UserInputField {
 export type MessageBlock =
   | { type: "thinking"; content: string }
   | { type: "response"; content: string }
-  | { type: "tool_call"; tool_name: string; arguments?: Record<string, unknown> }
+  | { type: "tool_call_group"; tools: ToolCall[] }
   | { type: "user_input"; fields: UserInputField[]; answered: boolean };
 
 export interface ChatMessage {
@@ -86,11 +86,21 @@ export function useChat() {
               }
 
               if (data.type === "tool_call") {
-                blocks.push({
-                  type: "tool_call",
-                  tool_name: data.tool_name,
-                  arguments: data.arguments,
-                });
+                const lastBlock = blocks[blocks.length - 1];
+                if (lastBlock?.type === "tool_call_group") {
+                  blocks[blocks.length - 1] = {
+                    ...lastBlock,
+                    tools: [
+                      ...lastBlock.tools,
+                      { tool_name: data.tool_name, arguments: data.arguments },
+                    ],
+                  };
+                } else {
+                  blocks.push({
+                    type: "tool_call_group",
+                    tools: [{ tool_name: data.tool_name, arguments: data.arguments }],
+                  });
+                }
               }
 
               if (data.type === "user_input") {
