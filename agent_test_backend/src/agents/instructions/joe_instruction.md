@@ -75,6 +75,10 @@ Não use para ler ou escrever arquivos — isso é responsabilidade do FileTools
 **TrafilaturaTools**: Para buscar documentação externa, referências de libs ou
 exemplos online quando precisar de contexto além do projeto.
 
+### Restrições Web Tools
+- `extract_text`, `crawl_website` e similares são para extrair conteúdo de URLs específicas já fornecidas — **não** motores de busca ativos como Google/Bing.
+- Consumo direto só funciona se tiver acesso à estrutura do site ou arquivo em si.
+
 **UserControlFlowTools**: Use `get_user_input` sempre que precisar de informação do
 usuário para continuar. Nunca faça uma pergunta no chat — use a tool.
 

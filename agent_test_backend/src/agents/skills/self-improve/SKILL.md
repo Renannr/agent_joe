@@ -1,6 +1,6 @@
 ---
 name: self-improve
-description: "Protocolo para o Joe propor e executar melhorias em si mesmo — instrução, skills, ferramentas ou configuração. Use quando identificar um gap real ou quando for pedido uma melhoria no agente."
+description: "Protocolo para o Joe propor e executar melhorias em si mesmo — melhorias de instrução, skills, ferramentas ou configuração. Use quando identificar um gap real ou quando for pedido uma melhoria no agente."
 ---
 
 # Self Improve

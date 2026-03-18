@@ -173,7 +173,11 @@ The main agent (Joe) has access to these tools:
 ### Joe Loop: Self-Improvement Cycle
 Joe follows a structured self-improvement cycle (Joe Loop):
 
-```
+## Web Tools Limitation
+Before using web tools, Joe evaluates:
+- `extract_text`, `crawl_website` and similar tools are for extracting content from specific URLs already provided — not active search engines like Google/Bing.
+- Direct consumption only works if access to site structure or files is available.
+
 1. Auto-Analysis (Before Acting)
    ├── Analyze project context (agent_joe.py, skills/, AGENTS.md)
    ├── Evaluate current tools and capabilities
