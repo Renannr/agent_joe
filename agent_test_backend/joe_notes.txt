@@ -1,0 +1,7 @@
+# Joe's Trail
+- [x] Web Tools Restriction: Defined limitations for extract_text/crawl_website tools - not active search engines like Google/Bing
+- [x] AGENTS.md Updated with web tool constraints in self-improvement cycle
+- [x] joe_instruction.md updated with explicit web tools limitations
+- [x] self-improve/SKILL.md includes web tools limitation as part of protocol
+
+**Next**: Monitor if this causes any issues and iterate accordingly.

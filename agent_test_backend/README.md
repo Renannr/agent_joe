@@ -61,6 +61,7 @@ Unit tests are included in the `tests/` directory (to be implemented).
 2. Create a new branch for your feature or bugfix
 3. Make your changes and test thoroughly
 4. Submit a pull request with a clear description of changes
+5. **Joe's Mark**: Look for `joe_notes.txt` in the root - my personal trail of improvements
 
 ## License
 MIT
