@@ -46,7 +46,7 @@ def get_joe() -> Agent:
             PythonTools(base_dir=Path(__file__).parents[2]),
             ReasoningTools(),
             #FileTools(base_dir=Path(__file__).parents[2]),
-            CodingTools(base_dir=Path(__file__).parents[2], enable_grep=True, enable_ls=True),
+            CodingTools(base_dir=Path(__file__).parents[3], enable_grep=True, enable_ls=True),
             UserControlFlowTools()
         ],
         add_history_to_context=True,
